@@ -25,9 +25,9 @@ export interface ServiceApiSession {
 	profileName: string | null;
 }
 
-export abstract class ServiceApi {
+export abstract class ServiceApi<THistoryItem = unknown> {
 	readonly id: string;
-	private leftoverHistoryItems: unknown[] = [];
+	private leftoverHistoryItems: THistoryItem[] = [];
 	hasCheckedHistoryCache = false;
 	hasReachedHistoryEnd = false;
 	nextHistoryPage = 0;
@@ -156,9 +156,9 @@ export abstract class ServiceApi {
 			}
 			const store = getSyncStore(this.id);
 			let { hasReachedEnd, hasReachedLastSyncDate } = store.data;
-			const historyItems: unknown[] = [];
+			const historyItems: THistoryItem[] = [];
 			do {
-				let responseItems: unknown[] = [];
+				let responseItems: THistoryItem[] = [];
 				if (this.leftoverHistoryItems.length > 0) {
 					responseItems = this.leftoverHistoryItems;
 					this.leftoverHistoryItems = [];
@@ -167,7 +167,7 @@ export abstract class ServiceApi {
 					if (!this.hasCheckedHistoryCache) {
 						let firstItem: ScrobbleItemValues | null = null;
 						if (historyCache.items.length > 0) {
-							const historyItemId = `${this.id}_${this.getHistoryItemId(historyCache.items[0])}`;
+							const historyItemId = `${this.id}_${this.getHistoryItemId(historyCache.items[0] as THistoryItem)}`;
 							const itemId = caches.historyItemsToItems.get(historyItemId);
 							if (itemId) {
 								firstItem = caches.items.get(itemId) ?? null;
@@ -185,7 +185,7 @@ export abstract class ServiceApi {
 						this.nextHistoryPage = historyCache.nextPage ?? this.nextHistoryPage;
 						this.nextHistoryUrl = historyCache.nextUrl ?? this.nextHistoryUrl;
 						if (historyCache.items.length > 0) {
-							responseItems = historyCache.items;
+							responseItems = historyCache.items as THistoryItem[];
 							historyCache.items = [];
 						}
 						this.hasCheckedHistoryCache = true;
@@ -217,7 +217,7 @@ export abstract class ServiceApi {
 			} while (!hasReachedEnd && itemsToLoad > 0);
 			if (historyItems.length > 0) {
 				const tmpItems: (ScrobbleItem | null)[] = [];
-				const historyItemsToConvert = [];
+				const historyItemsToConvert: THistoryItem[] = [];
 
 				for (const historyItem of historyItems) {
 					const historyItemId = `${this.id}_${this.getHistoryItemId(historyItem)}`;
@@ -289,7 +289,7 @@ export abstract class ServiceApi {
 	 *
 	 * Should be overridden in the child class.
 	 */
-	loadHistoryItems(_cancelKey = 'default'): Promise<unknown[]> {
+	loadHistoryItems(_cancelKey = 'default'): Promise<THistoryItem[]> {
 		Shared.errors.error('loadHistoryItems() is not implemented in this service!', new Error());
 		return Promise.resolve([]);
 	}
@@ -299,7 +299,7 @@ export abstract class ServiceApi {
 	 *
 	 * Should be overridden in the child class.
 	 */
-	isNewHistoryItem(_historyItem: unknown, _lastSync: number, _lastSyncId: string): boolean {
+	isNewHistoryItem(_historyItem: THistoryItem, _lastSync: number, _lastSyncId: string): boolean {
 		Shared.errors.error('isNewHistoryItem() is not implemented in this service!', new Error());
 		return true;
 	}
@@ -309,7 +309,7 @@ export abstract class ServiceApi {
 	 *
 	 * Should be overridden in the child class.
 	 */
-	getHistoryItemId(_historyItem: unknown): string {
+	getHistoryItemId(_historyItem: THistoryItem): string {
 		Shared.errors.error('getHistoryItemId() is not implemented in this service!', new Error());
 		return '';
 	}
@@ -319,7 +319,7 @@ export abstract class ServiceApi {
 	 *
 	 * Should be overridden in the child class.
 	 */
-	convertHistoryItems(_historyItems: unknown[]): Promisable<ScrobbleItem[]> {
+	convertHistoryItems(_historyItems: THistoryItem[]): Promisable<ScrobbleItem[]> {
 		Shared.errors.error('convertHistoryItems() is not implemented in this service!', new Error());
 		return Promise.resolve([]);
 	}
@@ -331,7 +331,7 @@ export abstract class ServiceApi {
 	 *
 	 * Should be overridden in the child class.
 	 */
-	updateItemFromHistory(_item: ScrobbleItemValues, _historyItem: unknown): void {
+	updateItemFromHistory(_item: ScrobbleItemValues, _historyItem: THistoryItem): void {
 		Shared.errors.error('updateItemFromHistory() is not implemented in this service!', new Error());
 		// Do nothing
 	}

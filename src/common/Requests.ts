@@ -60,7 +60,7 @@ class _Requests {
 					// Cloudflare doesn't provide Retry-After header in HTML error pages
 					// Use a reasonable default wait time (60 seconds)
 					const retryAfter = 60000;
-					console.warn(
+					Shared.errors.warning(
 						`Cloudflare rate limit detected (Error ${errorCode}). Retrying in ${retryAfter / 1000}s`
 					);
 					setTimeout(() => void this.sendDirectly(request, tabId, resolve, reject), retryAfter);

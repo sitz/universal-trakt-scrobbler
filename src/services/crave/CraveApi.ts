@@ -156,7 +156,7 @@ const mapContentToScrobbleItem = (content: CraveContentItem): ScrobbleItem => {
 	throw new Error(`Unsupported content type: ${content.contentType}`);
 };
 
-class _CraveApi extends ServiceApi {
+class _CraveApi extends ServiceApi<CraveContentItem> {
 	isActivated = false;
 	session: CraveSession | CraveSessionNoAuth = DEFAULT_CRAVE_SESSION;
 	pageSize = 30;

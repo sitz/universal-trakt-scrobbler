@@ -48,7 +48,7 @@ export interface CrunchyrollHistoryItem {
 	};
 }
 
-class _CrunchyrollApi extends ServiceApi {
+class _CrunchyrollApi extends ServiceApi<CrunchyrollHistoryItem> {
 	HOST_URL: string;
 	TOKEN_URL: string;
 	PROFILE_URL: string;

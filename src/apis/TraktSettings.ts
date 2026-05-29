@@ -1,5 +1,6 @@
 import { TraktApi } from '@apis/TraktApi';
 import { Cache } from '@common/Cache';
+import { Shared } from '@common/Shared';
 
 export interface TraktSettingsResponse {
 	account: TraktAccount;
@@ -45,7 +46,7 @@ class _TraktSettings extends TraktApi {
 					dateFormat += 'yyyy MMM d';
 					break;
 				default:
-					console.error('Unknown date format', settings.account.date_format);
+					Shared.errors.warning('Unknown Trakt date format.', settings.account.date_format);
 					dateFormat += 'd MMM yyyy, H:mm:ss';
 					return dateFormat;
 			}
