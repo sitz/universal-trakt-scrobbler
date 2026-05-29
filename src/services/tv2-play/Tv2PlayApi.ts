@@ -167,7 +167,8 @@ class _Tv2PlayApi extends ServiceApi<Tv2PlayHistoryItem> {
 			try {
 				contentInfo = await this.getProgressForItem(historyItem.asset.path);
 			} catch (error) {
-				Shared.errors.error(`Failed to get progress for item: ${historyItem.asset.path}`, error);
+				// Use optional chaining: a missing `asset` is what threw above, so don't re-throw here.
+				Shared.errors.error(`Failed to get progress for item: ${historyItem.asset?.path}`, error);
 			}
 
 			const item = await this.parseHistoryItemWithTitle(historyItem, contentInfo?.contentResponse);

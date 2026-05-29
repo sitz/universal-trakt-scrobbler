@@ -178,7 +178,9 @@ export const downgradeStorage = async (ctx: MigrationContext, version: number): 
 		const values = await ctx.get('options');
 		const options = values.options;
 		if (options) {
-			delete options.services['crunchyroll'];
+			if (options.services) {
+				delete options.services['crunchyroll'];
+			}
 			await ctx.doSet({ options: options as unknown as StorageValuesOptions }, true);
 		}
 	}
