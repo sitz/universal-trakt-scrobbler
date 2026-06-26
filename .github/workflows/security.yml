@@ -1,0 +1,29 @@
+name: Security
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  schedule:
+    # Weekly, Monday 06:00 UTC.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Audit dependencies
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      # Fail only on high/critical advisories in production dependencies to keep signal high.
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level high

@@ -1,7 +1,6 @@
 import { ScrobbleErrorData, SearchErrorData, StorageOptionsChangeData } from '@common/Events';
 import { RequestError } from '@common/RequestError';
 import { Shared } from '@common/Shared';
-import { ErrorInfo } from 'react';
 import Rollbar from 'rollbar';
 
 class _Errors {
@@ -64,22 +63,42 @@ class _Errors {
 		}
 	}
 
-	log(message: Error | string, details: Error | ErrorInfo): void {
+	/**
+	 * Logs an informational message. Use for one-time, expected events (e.g. storage
+	 * migrations) — not for per-frame or polling output, which should use {@link debug}.
+	 */
+	log(message: Error | string, details?: unknown): void {
 		console.log(`[UTS] ${message.toString()}`, details);
 	}
 
-	warning(message: string, details: Error): void {
+	/**
+	 * Logs a low-level diagnostic. Routed to `console.debug`, which browsers hide unless the
+	 * "Verbose" log level is enabled, so it stays quiet in production while remaining available
+	 * when troubleshooting (e.g. a scrobble parser failing). Never reported to Rollbar.
+	 */
+	debug(message: string, details?: unknown): void {
+		console.debug(`[UTS] ${message}`, details);
+	}
+
+	warning(message: string, details?: unknown): void {
 		console.warn(`[UTS] ${message}`, details);
 		if (this.rollbar) {
-			this.rollbar.warning(message, details.message);
+			this.rollbar.warning(message, this.toRollbarPayload(details));
 		}
 	}
 
-	error(message: string, details: Error): void {
+	error(message: string, details?: unknown): void {
 		console.error(`[UTS] ${message}`, details);
 		if (this.rollbar) {
-			this.rollbar.error(message, details.message);
+			this.rollbar.error(message, this.toRollbarPayload(details));
 		}
+	}
+
+	private toRollbarPayload(details?: unknown): string | undefined {
+		if (details instanceof Error) {
+			return details.message;
+		}
+		return typeof details === 'string' ? details : undefined;
 	}
 
 	validate(err: unknown): err is Error {

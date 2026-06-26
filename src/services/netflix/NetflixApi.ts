@@ -184,7 +184,7 @@ export interface NetflixAuiHistoryResponse {
 	};
 }
 
-class _NetflixApi extends ServiceApi {
+class _NetflixApi extends ServiceApi<NetflixHistoryItem> {
 	HOST_URL: string;
 	API_URL: string;
 	ACTIVATE_URL: string;
