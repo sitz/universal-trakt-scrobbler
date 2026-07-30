@@ -29,7 +29,7 @@ export * from '@common/storage/OptionsTypes';
 export * from '@common/storage/StorageVersions';
 
 class _BrowserStorage {
-	readonly currentVersion = 11;
+	readonly currentVersion = 12;
 
 	isSyncAvailable: boolean;
 	options = {} as StorageValuesOptions;

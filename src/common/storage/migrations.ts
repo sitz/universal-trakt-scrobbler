@@ -1,4 +1,5 @@
 import { Shared } from '@common/Shared';
+import browser from 'webextension-polyfill';
 import type { BrowserStorageSetValues } from '@common/storage/OptionsTypes';
 import type {
 	StorageValues,
@@ -160,6 +161,29 @@ export const upgradeStorage = async (ctx: MigrationContext, version: number): Pr
 			delete options.services['crunchyroll-beta'];
 
 			await ctx.doSet({ options }, true);
+		}
+	}
+
+	if (version < 12 && ctx.currentVersion >= 12) {
+		Shared.errors.log('Upgrading to v12...');
+
+		// `*://api.service-kp.com/*` moved from the required permissions to the optional ones, so
+		// it might no longer be granted. `permissions.request()` needs a user gesture, so disable
+		// the service instead — re-enabling it in the options will request the permission again.
+		const { options } = await ctx.get('options');
+
+		const kinoPub = options?.services?.['kino-pub'];
+		if (kinoPub && (kinoPub.scrobble || kinoPub.sync)) {
+			const hasPermission = await browser.permissions.contains({
+				origins: ['*://api.service-kp.com/*'],
+			});
+			if (!hasPermission) {
+				kinoPub.scrobble = false;
+				kinoPub.sync = false;
+				kinoPub.autoSync = false;
+
+				await ctx.doSet({ options }, true);
+			}
 		}
 	}
 

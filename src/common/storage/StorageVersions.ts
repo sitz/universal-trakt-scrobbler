@@ -15,7 +15,7 @@ import { TraktItemValues } from '@models/TraktItem';
  * version. Re-exported from `@common/BrowserStorage` for backwards-compatible imports.
  */
 
-export type StorageValues = StorageValuesV11;
+export type StorageValues = StorageValuesV12;
 export type StorageValuesOptions = StorageValuesOptionsV4;
 export type StorageValuesSyncOptions = StorageValuesSyncOptionsV3;
 
@@ -25,6 +25,10 @@ export type KinoPubAuthDetails = {
 	expires_in: number;
 	refresh_token: string;
 	created_at: number;
+};
+
+export type StorageValuesV12 = Omit<StorageValuesV11, 'version'> & {
+	version?: 12;
 };
 
 export type StorageValuesV11 = Omit<StorageValuesV10, 'version'> & {
