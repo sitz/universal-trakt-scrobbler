@@ -97,14 +97,13 @@ export abstract class ScrobbleParser {
 			['DOM', () => this.parsePlaybackFromDom()],
 			['custom', () => this.parsePlaybackFromCustom()],
 		];
-		for (const [_name, method] of methods) {
+		for (const [name, method] of methods) {
 			try {
 				partialPlayback = await method();
-			} catch (_err) {
-				//console.log(`Failed to parse playback from ${_name}!`, err);
+			} catch (err) {
+				Shared.errors.debug(`Failed to parse playback from ${name}.`, err);
 			}
 			if (partialPlayback) {
-				//console.log(`Playback parsed from ${_name}!`);
 				break;
 			}
 		}
@@ -206,14 +205,13 @@ export abstract class ScrobbleParser {
 			['DOM', () => this.parseItemFromDom()],
 			['custom', () => this.parseItemFromCustom()],
 		];
-		for (const [_name, method] of methods) {
+		for (const [name, method] of methods) {
 			try {
 				item = await method();
-			} catch (_err) {
-				//console.log(`Failed to parse item from ${_name}!`, err);
+			} catch (err) {
+				Shared.errors.debug(`Failed to parse item from ${name}.`, err);
 			}
 			if (item) {
-				//console.log(`Item parsed from ${_name}!`);
 				break;
 			}
 		}
@@ -267,14 +265,13 @@ export abstract class ScrobbleParser {
 			['DOM', () => this.parseItemIdFromDom()],
 			['custom', () => this.parseItemIdFromCustom()],
 		];
-		for (const [_name, method] of methods) {
+		for (const [name, method] of methods) {
 			try {
 				id = await method();
-			} catch (_err) {
-				//console.log(`Failed to parse item ID from ${_name}!`, err);
+			} catch (err) {
+				Shared.errors.debug(`Failed to parse item ID from ${name}.`, err);
 			}
 			if (id) {
-				//console.log(`Item ID parsed from ${_name}!`);
 				break;
 			}
 		}

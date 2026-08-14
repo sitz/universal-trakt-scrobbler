@@ -41,7 +41,7 @@ export interface MubiSession extends ServiceApiSession {
 	country: string;
 }
 
-class _MubiApi extends ServiceApi {
+class _MubiApi extends ServiceApi<MubiHistoryItem> {
 	HOST_URL: string;
 	API_URL: string;
 

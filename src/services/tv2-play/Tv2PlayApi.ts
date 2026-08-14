@@ -76,7 +76,7 @@ interface Tv2PlaySession {
 	refreshToken?: string;
 }
 
-class _Tv2PlayApi extends ServiceApi {
+class _Tv2PlayApi extends ServiceApi<Tv2PlayHistoryItem> {
 	HISTORY_URL: string;
 	TOKEN_URL: string;
 	PROFILE_URL: string;
@@ -167,7 +167,8 @@ class _Tv2PlayApi extends ServiceApi {
 			try {
 				contentInfo = await this.getProgressForItem(historyItem.asset.path);
 			} catch (error) {
-				console.error('Failed to get progress for item:', historyItem.asset.path, error);
+				// Use optional chaining: a missing `asset` is what threw above, so don't re-throw here.
+				Shared.errors.error(`Failed to get progress for item: ${historyItem.asset?.path}`, error);
 			}
 
 			const item = await this.parseHistoryItemWithTitle(historyItem, contentInfo?.contentResponse);
@@ -214,7 +215,7 @@ class _Tv2PlayApi extends ServiceApi {
 				contentResponse: responseJson,
 			};
 		} catch (error) {
-			console.error('Failed to fetch progress for item:', path, error);
+			Shared.errors.error(`Failed to fetch progress for item: ${path}`, error);
 			return { progress: null, year: 0 };
 		}
 	}

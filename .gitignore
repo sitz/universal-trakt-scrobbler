@@ -8,3 +8,4 @@ dist
 /universal-trakt-scrobbler.iml
 package-lock.json
 .DS_Store
+audit.json

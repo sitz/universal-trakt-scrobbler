@@ -134,7 +134,7 @@ export interface NrkSession {
 	};
 }
 
-class _NrkApi extends ServiceApi {
+class _NrkApi extends ServiceApi<NrkProgressItem> {
 	HOST_URL: string;
 	API_HOST_URL: string;
 	TOKEN_URL: string;

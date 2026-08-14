@@ -3,6 +3,7 @@ import { ServiceApi, ServiceApiSession } from '@apis/ServiceApi';
 import { EpisodeItem, ScrobbleItem, ScrobbleItemValues } from '@models/Item';
 import { Utils } from '@common/Utils';
 import { Cache, CacheItem } from '@common/Cache';
+import { Shared } from '@common/Shared';
 import { DiscoveryplusService } from '@/discoveryplus/DiscoveryplusService';
 
 export interface DiscoveryplusSession extends ServiceApiSession {
@@ -43,7 +44,7 @@ export interface CachedRouting {
 	timestamp: number;
 }
 
-class _DiscoveryplusApi extends ServiceApi {
+class _DiscoveryplusApi extends ServiceApi<DiscoveryplusHistoryItem> {
 	public session: DiscoveryplusSession | null = null;
 	public hasReachedHistoryEnd = false;
 	public currentHistoryPage = 1;
@@ -116,7 +117,7 @@ class _DiscoveryplusApi extends ServiceApi {
 			this.session = { profileName: profileData.data.attributes.profileName };
 			this.isActivated = true;
 		} catch (err) {
-			console.error('Activation failed:', err);
+			Shared.errors.error('Failed to activate Discovery+ session.', err);
 			this.session = null;
 		}
 	}

@@ -118,7 +118,7 @@ export interface ViaplayProductUserInfo {
 	};
 }
 
-class _ViaplayApi extends ServiceApi {
+class _ViaplayApi extends ServiceApi<ViaplayProduct> {
 	INITIAL_URL = 'https://viaplay.com/';
 	HOST_URL = '';
 	API_BASE_URL = '';

@@ -125,7 +125,7 @@ export interface HboMaxContentErrorResponse {
 	};
 }
 
-class _HboMaxApi extends ServiceApi {
+class _HboMaxApi extends ServiceApi<HboMaxHistoryItem> {
 	HOST_URL = 'https://play.hbomax.com';
 	API_BASE = 'api.hbo.com';
 	GLOBAL_AUTH_URL = `https://oauth.${this.API_BASE}/auth/tokens`;
